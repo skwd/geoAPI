@@ -6,6 +6,10 @@ RestAPI that provide ip Geolocalisation base on GeoLite2 data.
 	pip3 install flask
 	pip3 install flask-restful 
 
+# Running 
+
+	python3 geoApi.py
+
 # Licence
 
 Attribution-ShareAlike 4.0 International  

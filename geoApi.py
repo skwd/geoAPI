@@ -55,7 +55,7 @@ geoInfo = list(csv.DictReader(open("GeoLite2-Country-Locations-fr.csv", 'r'), de
 tempNetworkBLockIPv6 = list(csv.DictReader(open("GeoLite2-Country-Blocks-IPv6.csv", 'r'), delimiter=',', quotechar='"'))
 for block in tempNetworkBLockIPv6:
     iptochange = ipaddress.ip_network(block['network'])
-    binip = bin(int(iptochange[0]))[2:]
+    binip = "".join([bin(int(x, 16))[2:].zfill(32) for x in str(iptochange[0].exploded).split(':')])
     binip = binip[0:int(iptochange.prefixlen)]
     NetworkBLockIPv6.add(binip,resolv_geo_id(geoInfo, block["geoname_id"]))
 tempNetworkBLockIPv6 = None
@@ -64,7 +64,7 @@ print("[*] IPv6 finised")
 tempNetworkBLockIPv4 = list(csv.DictReader(open("GeoLite2-Country-Blocks-IPv4.csv", 'r'), delimiter=',', quotechar='"'))
 for block in tempNetworkBLockIPv4:
     iptochange = ipaddress.ip_network(block['network'])
-    binip = bin(int(iptochange[0]))[2:]
+    binip = "".join([bin(int(x)+256)[3:] for x in str(iptochange[0]).split('.')])
     binip = binip[0:int(iptochange.prefixlen)]
     NetworkBLockIPv4.add(binip,resolv_geo_id(geoInfo, block["geoname_id"]) )
 tempNetworkBLockIPv4 = None 
@@ -76,11 +76,11 @@ class geoIP(Resource):
     def get(self,ip):
         ipObject = ipaddress.ip_address(ip)
         if ipObject.version == 4:
-            biniptosearch = bin(int(ipObject))[2:]
+            biniptosearch = "".join([bin(int(x)+256)[3:] for x in str(ipObject).split('.')])
             geoid = NetworkBLockIPv4.search(biniptosearch)
             return Response(geoid, mimetype='text/plain')
         else:
-            biniptosearch = bin(int(ipObject))[2:]
+            biniptosearch = "".join([bin(int(x, 16))[2:].zfill(32) for x in str(ipObject.exploded).split(':')])
             geoid = NetworkBLockIPv6.search(biniptosearch)
             return Response(geoid, mimetype='text/plain')
 

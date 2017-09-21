@@ -14,6 +14,10 @@ Tested on ubuntu 16.04 LTS
 
 	python3 geoApi.py
 
+# Usage 
+
+	http://[serverIP]:5002/geo/[IPtoGeoLocalise]
+
 # Licence
 
 Attribution-ShareAlike 4.0 International  
